@@ -3,11 +3,50 @@ package com.mygdx.game;
 import com.badlogic.gdx.InputProcessor;
 
 public class Input implements InputProcessor{
+	private Player player;
+	public Input(Player p)
+	{
+		player = p;
+	}
 	public boolean keyDown(int keycode) {
+		switch(keycode)
+		{
+		case 51://w
+			player.setAccelerating(1);
+			break;
+		case 47://s
+			player.setAccelerating(-1);
+			break;
+		case 29://a
+			player.setRotating(1);
+			break;
+		case 32://d
+			player.setRotating(-1);
+			break;
+		case 62://space
+			break;
+		}
 		return false;
 	}
 
 	public boolean keyUp(int keycode) {
+		switch(keycode)
+		{
+		case 51://w
+			player.setAccelerating(0);
+			break;
+		case 47://s
+			player.setAccelerating(0);
+			break;
+		case 29://a
+			player.setRotating(0);
+			break;
+		case 32://d
+			player.setRotating(0);
+			break;
+		case 62://space
+			break;
+		}
 		return false;
 	}
 
