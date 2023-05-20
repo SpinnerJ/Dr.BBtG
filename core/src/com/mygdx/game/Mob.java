@@ -5,11 +5,12 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Mob {
-	private int x;
-	private int y;
+	private float x;
+	private float y;
 	private int width;
 	private int height;
 	private float angle;
+	private float speed;
 	private int health;
 	private Sprite sprite;
 	
@@ -23,19 +24,31 @@ public class Mob {
 		this.sprite = new Sprite(img);
 		this.sprite.setPosition(x,y);
 		this.sprite.setSize(width,height);
-		this.sprite.setOrigin(x+(width/2), y+(height/2));
+		this.sprite.setOrigin((width/2), (height/2));
 		this.health = health;
-		
+		this.speed = 0;
 	}
 	
-	public int getX()
+	public float getX()
 	{
 		return this.x;
 	}
 	
-	public int getY()
+	public void setX(float x)
+	{
+		this.x = x;
+		this.sprite.setX(x);
+	}
+	
+	public float getY()
 	{
 		return this.y;
+	}
+	
+	public void setY(float y)
+	{
+		this.y = y;
+		this.sprite.setY(y);
 	}
 	
 	public float getAngle()
@@ -47,6 +60,16 @@ public class Mob {
 	{
 		this.angle = angle;
 		this.sprite.setRotation(angle);
+	}
+	
+	public float getSpeed()
+	{
+		return speed;
+	}
+	
+	public void setSpeed(float speed)
+	{
+		this.speed = speed;
 	}
 	
 	public int getHealth()
