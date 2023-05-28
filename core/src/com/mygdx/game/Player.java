@@ -6,6 +6,7 @@ public class Player {
 	private int accelerating;
 	private Mob mob;
 	private final float MAXSPEED = 1;
+	private float aceAngle;
 	
 	public Player(Mob m)
 	{
@@ -13,6 +14,7 @@ public class Player {
 		mob = m;
 		acceleration = 0;
 		accelerating = 0;
+		aceAngle = 0;
 	}
 	
 	public int getRotating()
@@ -23,6 +25,16 @@ public class Player {
 	public void setRotating(int r)
 	{
 		rotating = r;
+	}
+	
+	public float getAceAngle()
+	{
+		return aceAngle;
+	}
+	
+	public void setAceAngle(float ace)
+	{
+		aceAngle = ace;
 	}
 	
 	public int getAccelerating()
