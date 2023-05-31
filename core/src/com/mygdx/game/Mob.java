@@ -1,5 +1,4 @@
 package com.mygdx.game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,7 +13,7 @@ public class Mob {
 	private int health;
 	private Sprite sprite;
 	
-	public Mob(int x,int y,int width,int height,Texture img,int health)
+	public Mob(float x,float y,int width,int height,Texture img,int health,int type)
 	{
 		this.x = x;
 		this.y = y;
