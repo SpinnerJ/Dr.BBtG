@@ -1,11 +1,11 @@
 package com.mygdx.game;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
@@ -20,19 +20,29 @@ public class Game extends ApplicationAdapter{
 	private float aspect;
 	private Player player;
 	private Mob m;
+	private Database db;
+	private ArrayList<Mob> enemies = new ArrayList<Mob>();
+	private ArrayList<Texture> graphics = new ArrayList<Texture>();
 	
 	@Override
 	public void create () {
-		background = new Texture(Gdx.files.internal("background.png"));
+		loadGraphics();
+		background = graphics.get(0);
 		
 		aspect = Gdx.graphics.getWidth()/Gdx.graphics.getHeight(); //width to height ratio
 		camera = new OrthographicCamera(GAMEWIDTH,GAMEHEIGHT*aspect); //2D camera
 		camera.position.set(camera.viewportWidth/2f,camera.viewportHeight/2f,0); //mapping camera position to screen viewport
 		batch = new SpriteBatch(); //required to draw in libGDX
-		test = new Mob(49,49,6,6,new Texture(Gdx.files.internal("playerShip.png")),10); //mob given to player
+		test = new Mob(49,49,6,6,graphics.get(1),10,0); //mob given to player
 		player = new Player(test); //player object
 		m = player.getMob(); //reference to player's mob
 		Gdx.input.setInputProcessor(new Input(player)); //links libGDX input to our input class
+		db = new Database();
+		db.connect();
+		String test = db.queryAll();
+		System.out.println(test);
+		spawnEnemy(0);
+		spawnEnemy(0);
 	}
 
 	float testF = 0; //used for testing rotation
@@ -107,6 +117,10 @@ public class Game extends ApplicationAdapter{
 		
 		batch.begin(); //start drawing graphics
 		batch.draw(background,0,0,camera.viewportWidth,camera.viewportHeight); //draw camera viewport
+		for(int i=0;i<enemies.size();i++)
+		{
+			enemies.get(i).draw(batch);
+		}
 		test.draw(batch);//draw player's mob
 		batch.end();
 	}
@@ -116,5 +130,56 @@ public class Game extends ApplicationAdapter{
 		background.dispose();
 		test.dispose();
 		batch.dispose();
+	}
+	
+	public void spawnEnemy(int type)
+	{
+		//figure out what borders the player is closest to and randomly choose a border
+		//that is far away from the player to spawn an enemy
+		float px = m.getX();
+		float py = m.getY();
+		px = px - 50;
+		py = py - 50;
+		
+		float rx = 0;
+		float ry = 0;
+		
+		boolean side = Math.random() < 0.5;
+		if(side == false)
+		{
+			ry = (float)Math.random()*100;
+			if(px < 0)
+			{
+				rx = 94;
+			}
+			else
+			{
+				rx = 0;
+			}
+			
+		}
+		else
+		{
+			rx = (float)Math.random()*100;
+			if(py < 0)
+			{
+				ry = 94;
+			}
+			else
+			{
+				ry = 0;
+			}
+		}
+		
+		Mob enemy = new Mob(rx,ry,6,6,graphics.get(type+2),10,type);
+		enemies.add(enemy);
+		
+	}
+	
+	public void loadGraphics()
+	{
+		graphics.add(new Texture(Gdx.files.internal("background.png")));
+		graphics.add(new Texture(Gdx.files.internal("playerShip.png")));
+		graphics.add(new Texture(Gdx.files.internal("enemy1.png")));
 	}
 }
