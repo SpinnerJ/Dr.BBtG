@@ -6,6 +6,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
@@ -23,8 +24,8 @@ public class Game extends ApplicationAdapter{
 	private Database db;
 	private ArrayList<Mob> enemies = new ArrayList<Mob>();
 	private ArrayList<Texture> graphics = new ArrayList<Texture>();
-	private enum gameStates{MENU1,MENU2,START,PLAYING,HIGHSCORE};
-	private gameStates currentState = gameStates.MENU1;
+	private enum gameStates{MENU,START,PLAYING,GAMEOVER,HIGHSCORE};
+	private gameStates currentState = gameStates.MENU;
 	
 	@Override
 	public void create () {
@@ -57,21 +58,41 @@ public class Game extends ApplicationAdapter{
 		
 		switch(currentState)
 		{
-		case MENU1:
+		case MENU:
 			//initial menu on loading the game
-			if(player.getAccelerating() != 0)
+			//start/resume Game
+			//highscores
+			//exit
+			if(player.getClick().x >= 31.56 && player.getClick().x <= 67.96) //poll mouse if last place clicked was a button
 			{
-				currentState = gameStates.PLAYING;
+				if(player.getClick().y >= 65.0 && player.getClick().y <= 74.79)
+				{
+					//clicked play button
+					currentState = gameStates.PLAYING;
+					player.setClick(new Vector3(0,0,0));
+				}
+			}
+			
+			if(player.getClick().x >= 31.40 && player.getClick().x <= 67.96) //poll mouse if last place clicked was a button
+			{
+				if(player.getClick().y >= 48.33 && player.getClick().y <= 58.54)
+				{
+					//clicked highscore button
+					currentState = gameStates.HIGHSCORE;
+					player.setClick(new Vector3(0,0,0));
+				}
+			}
+			
+			if(player.getClick().x >= 31.56 && player.getClick().x <= 67.81) //poll mouse if last place clicked was a button
+			{
+				if(player.getClick().y >= 32.08 && player.getClick().y <= 41.66)
+				{
+					Gdx.app.exit();//quit
+				}
 			}
 			batch.begin(); //start drawing graphics
 			batch.draw(background,0,0,camera.viewportWidth,camera.viewportHeight); //draw camera viewport
-			batch.end();
-			//Gdx.app.exit();
-			break;
-		case MENU2:
-			//menu when pressing escape while playing a game
-			batch.begin(); //start drawing graphics
-			batch.draw(background,0,0,camera.viewportWidth,camera.viewportHeight); //draw camera viewport
+			batch.draw(graphics.get(5),camera.viewportWidth*.25f,camera.viewportHeight*.1f,camera.viewportWidth*.5f,camera.viewportHeight*.8f); //draw camera viewport
 			batch.end();
 			break;
 		case START:
@@ -82,6 +103,11 @@ public class Game extends ApplicationAdapter{
 			batch.end();
 			break;
 		case PLAYING:
+			if(player.getEscape() == true)
+			{
+				currentState = gameStates.MENU;
+				player.setEscape(false);
+			}
 			//if player is pressing rotating key, rotate the player
 			if(player.getRotating() != 0)
 			{
@@ -153,6 +179,8 @@ public class Game extends ApplicationAdapter{
 			test.draw(batch);//draw player's mob
 			batch.end();
 			break;
+		case GAMEOVER:
+			break;
 		case HIGHSCORE:
 			break;
 		}
@@ -217,8 +245,8 @@ public class Game extends ApplicationAdapter{
 		graphics.add(new Texture(Gdx.files.internal("background.png")));
 		graphics.add(new Texture(Gdx.files.internal("playerShip.png")));
 		graphics.add(new Texture(Gdx.files.internal("enemy1.png")));
-		graphics.add(new Texture(Gdx.files.internal("enemy1.png")));
-		graphics.add(new Texture(Gdx.files.internal("enemy1.png")));
-		graphics.add(new Texture(Gdx.files.internal("buttonBlue.png")));
+		graphics.add(new Texture(Gdx.files.internal("enemy2.png")));
+		graphics.add(new Texture(Gdx.files.internal("enemy3.png")));
+		graphics.add(new Texture(Gdx.files.internal("menu.png")));
 	}
 }
