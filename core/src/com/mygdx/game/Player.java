@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.math.Vector3;
+
 public class Player {
 	private int rotating;
 	private float acceleration;
@@ -7,6 +9,9 @@ public class Player {
 	private Mob mob;
 	private final float MAXSPEED = 1;
 	private float aceAngle;
+	private int score;
+	private Vector3 clicked;
+	private boolean escape = false;
 	
 	public Player(Mob m)
 	{
@@ -15,6 +20,8 @@ public class Player {
 		acceleration = 0;
 		accelerating = 0;
 		aceAngle = 0;
+		score = 0;
+		clicked = new Vector3(0,0,0);
 	}
 	
 	public int getRotating()
@@ -65,5 +72,35 @@ public class Player {
 	public float getMaxSpeed()
 	{
 		return MAXSPEED;
+	}
+	
+	public int getScore()
+	{
+		return score;
+	}
+	
+	public void setScore(int s)
+	{
+		score = s;
+	}
+	
+	public void setClick(Vector3 v)
+	{
+		clicked = v;
+	}
+	
+	public Vector3 getClick()
+	{
+		return clicked;
+	}
+	
+	public boolean getEscape()
+	{
+		return escape;
+	}
+	
+	public void setEscape(boolean e)
+	{
+		escape = e;
 	}
 }

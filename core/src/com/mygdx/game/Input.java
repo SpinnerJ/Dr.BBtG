@@ -51,6 +51,9 @@ public class Input implements InputProcessor{
 			break;
 		case 62://space
 			break;
+		case 111://escape
+			player.setEscape(true);
+			break;
 		}
 		return false;
 	}

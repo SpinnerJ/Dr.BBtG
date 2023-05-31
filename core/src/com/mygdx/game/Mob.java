@@ -12,6 +12,8 @@ public class Mob {
 	private float speed;
 	private int health;
 	private Sprite sprite;
+	private boolean alive;
+	private int timer;
 	
 	public Mob(float x,float y,int width,int height,Texture img,int health,int type)
 	{
@@ -26,6 +28,8 @@ public class Mob {
 		this.sprite.setOrigin((width/2), (height/2));
 		this.health = health;
 		this.speed = 0;
+		this.alive = true;
+		this.timer = 0;
 	}
 	
 	public float getX()
