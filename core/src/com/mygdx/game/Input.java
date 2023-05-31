@@ -1,12 +1,17 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class Input implements InputProcessor{
 	private Player player;
-	public Input(Player p)
+	private OrthographicCamera camera;
+	public Input(Player p, OrthographicCamera camera)
 	{
 		player = p;
+		this.camera = camera;
 	}
 	public boolean keyDown(int keycode) {
 		switch(keycode)
@@ -55,6 +60,9 @@ public class Input implements InputProcessor{
 	}
 
 	public boolean touchDown(int x, int y, int pointer, int button) {
+		System.out.println(camera.unproject(new Vector3(x,y,0)));
+		Vector3 vec = camera.unproject(new Vector3(x,y,0));
+		player.setClick(vec);
 		return false;
 	}
 
