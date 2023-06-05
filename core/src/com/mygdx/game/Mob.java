@@ -14,6 +14,9 @@ public class Mob {
 	private Sprite sprite;
 	private boolean alive;
 	private int timer;
+	private static enum states{IDLE,HUNT,FIRE};
+	private states currentState = states.IDLE;
+	private int type;
 	
 	public Mob(float x,float y,int width,int height,Texture img,int health,int type)
 	{
@@ -25,11 +28,12 @@ public class Mob {
 		this.sprite = new Sprite(img);
 		this.sprite.setPosition(x,y);
 		this.sprite.setSize(width,height);
-		this.sprite.setOrigin((width/2), (height/2));
+		this.sprite.setOrigin((width/2f), (height/2f));
 		this.health = health;
 		this.speed = 0;
 		this.alive = true;
 		this.timer = 0;
+		this.type = type;
 	}
 	
 	public float getX()
@@ -89,4 +93,31 @@ public class Mob {
 	{
 		this.sprite.getTexture().dispose();
 	}
+	
+	public Sprite getSprite()
+	{
+		return this.sprite;
+	}
+	
+	public int getWidth()
+	{
+		return width;
+	}
+	
+	public void update(Mob player)
+	{
+		boolean nearPlayer = false;
+		
+		switch(currentState)
+		{
+		case IDLE:
+			break;
+		case HUNT:
+			break;
+		case FIRE:
+			break;
+		
+		}
+	}
+	
 }

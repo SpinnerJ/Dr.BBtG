@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.InputProcessor;
 
 public class Game extends ApplicationAdapter{
 	private static final int GAMEWIDTH = 100; //game width in spatial coordinates, doesn't rely on amount of pixels on screen
@@ -24,6 +25,8 @@ public class Game extends ApplicationAdapter{
 	private Database db;
 	private ArrayList<Mob> enemies = new ArrayList<Mob>();
 	private ArrayList<Texture> graphics = new ArrayList<Texture>();
+	private ArrayList<Bullet> enemyBullets = new ArrayList<Bullet>();
+	private ArrayList<Bullet> playerBullets = new ArrayList<Bullet>();
 	private enum gameStates{MENU,START,PLAYING,GAMEOVER,HIGHSCORE};
 	private gameStates currentState = gameStates.MENU;
 	
@@ -40,15 +43,18 @@ public class Game extends ApplicationAdapter{
 		player = new Player(test); //player object
 		m = player.getMob(); //reference to player's mob
 		Gdx.input.setInputProcessor(new Input(player,camera)); //links libGDX input to our input class
+		
+	    
+	    
 		db = new Database();
 		db.connect();
 		String test = db.queryAll();
 		System.out.println(test);
-		spawnEnemy(0);
+		spawnEnemy(1);
+		spawnEnemy(2);
 		spawnEnemy(0);
 	}
 
-	float testF = 0; //used for testing rotation
 	@Override
 	public void render () {
 		camera.update();
@@ -242,11 +248,13 @@ public class Game extends ApplicationAdapter{
 	
 	public void loadGraphics()
 	{
-		graphics.add(new Texture(Gdx.files.internal("background.png")));
-		graphics.add(new Texture(Gdx.files.internal("playerShip.png")));
-		graphics.add(new Texture(Gdx.files.internal("enemy1.png")));
-		graphics.add(new Texture(Gdx.files.internal("enemy2.png")));
-		graphics.add(new Texture(Gdx.files.internal("enemy3.png")));
-		graphics.add(new Texture(Gdx.files.internal("menu.png")));
+		graphics.add(new Texture(Gdx.files.internal("background.png")));//0
+		graphics.add(new Texture(Gdx.files.internal("playerShip.png")));//1
+		graphics.add(new Texture(Gdx.files.internal("enemy1.png")));//2
+		graphics.add(new Texture(Gdx.files.internal("enemy2.png")));//3
+		graphics.add(new Texture(Gdx.files.internal("enemy3.png")));//4
+		graphics.add(new Texture(Gdx.files.internal("menu.png")));//5
+		graphics.add(new Texture(Gdx.files.internal("dotBlue.png")));//6
+		graphics.add(new Texture(Gdx.files.internal("dotRed.png")));//7
 	}
 }
