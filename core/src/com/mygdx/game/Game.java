@@ -263,6 +263,12 @@ public class Game extends ApplicationAdapter{
 					if(player.getInvulnerable()<=0 && enemies.get(i).getAlive() == true)
 					{
 						player.setInvulnerable(60);
+						player.setHealth(player.getHealth()-1);
+						enemies.get(i).kill(graphics.get(8));
+						if(player.getHealth() <= 0)
+						{
+							currentState = gameStates.GAMEOVER;
+						}
 					}
 				}
 				enemies.get(i).draw(batch);
@@ -297,6 +303,12 @@ public class Game extends ApplicationAdapter{
 				if(collision == true)
 				{
 					enemyBullets.get(i).setAlive(false);
+					player.setInvulnerable(60);
+					player.setHealth(player.getHealth()-1);
+					if(player.getHealth() <= 0)
+					{
+						currentState = gameStates.GAMEOVER;
+					}
 				}
 				if(enemyBullets.get(i).getAlive() == false)
 				{

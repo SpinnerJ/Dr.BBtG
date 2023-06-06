@@ -15,6 +15,7 @@ public class Player {
 	private int invulnerable = 0;
 	private boolean shooting = false;
 	private int timer = 0;
+	private int health = 10;
 	
 	public Player(Mob m)
 	{
@@ -135,5 +136,15 @@ public class Player {
 	public int getTimer()
 	{
 		return timer;
+	}
+	
+	public void setHealth(int h)
+	{
+		health = h;
+	}
+	
+	public int getHealth()
+	{
+		return health;
 	}
 }

@@ -278,6 +278,7 @@ public class Mob {
 	{
 		return this.timer;
 	}
+	
 	public boolean checkCollision(Mob m)
 	{
 		boolean collision = false;
