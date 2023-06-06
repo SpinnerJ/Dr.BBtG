@@ -239,7 +239,7 @@ public class Mob {
 					break;
 				}
 				this.setAngle(r+90);
-				this.timer = 60;
+				this.timer = 40+(int)(Math.random()*40);
 				Bullet bullet = new Bullet(mx+3,my+3,this.angle,tex,1);
 				bullets.add(bullet);
 			}
@@ -258,6 +258,26 @@ public class Mob {
 		}
 	}
 	
+	public void kill(Texture tex)
+	{
+		this.currentState = states.DEAD;
+		this.alive = false;
+		this.sprite = new Sprite(tex);
+		this.sprite.setPosition(x,y);
+		this.sprite.setSize(width,height);
+		this.sprite.setOrigin((width/2f), (height/2f));
+		this.timer = 60;
+	}
+	
+	public boolean getAlive()
+	{
+		return this.alive;
+	}
+	
+	public int getTimer()
+	{
+		return this.timer;
+	}
 	public boolean checkCollision(Mob m)
 	{
 		boolean collision = false;

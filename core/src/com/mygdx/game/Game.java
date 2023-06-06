@@ -33,6 +33,9 @@ public class Game extends ApplicationAdapter{
 	private enum gameStates{MENU,START,PLAYING,GAMEOVER,HIGHSCORE};
 	private gameStates currentState = gameStates.MENU;
 	private int soundChanged = 0;
+	private int time = 0;
+	private int frames = 0;
+	private int spawns = 1;
 	
 	@Override
 	public void create () {
@@ -56,9 +59,6 @@ public class Game extends ApplicationAdapter{
 		db.connect();
 		String test = db.queryAll();
 		System.out.println(test);
-		spawnEnemy(1);
-		spawnEnemy(2);
-		spawnEnemy(0);
 	}
 
 	@Override
@@ -117,11 +117,43 @@ public class Game extends ApplicationAdapter{
 		case START:
 			//reset state of game so that health is maxed, time is zero, etc
 			//then go straight into playing state
+			time = 0;
+			frames = 0;
+			spawns = 1;
 			batch.begin(); //start drawing graphics
 			batch.draw(background,0,0,camera.viewportWidth,camera.viewportHeight); //draw camera viewport
 			batch.end();
 			break;
 		case PLAYING:
+			frames++;
+			if(frames >= 60)
+			{
+				frames = 0;
+				time++;
+				int spawnType = 0;
+				if(time%10 == 0)
+				{
+					for(int i=0;i<spawns;i++)
+					{
+						double r = Math.random();
+						if(r < 0.33)
+						{
+							spawnType = 0;
+						}
+						else if(r < 0.66)
+						{
+							spawnType = 1;
+						}
+						else
+						{
+							spawnType = 2;
+						}
+						spawnEnemy(spawnType);
+					}
+					spawns++;
+				}
+			}
+			
 			if(soundChanged == 0 || soundChanged == 1)
 			{
 				soundChanged = 2;
@@ -228,21 +260,26 @@ public class Game extends ApplicationAdapter{
 				boolean collision = enemies.get(i).checkCollision(m);
 				if(collision == true)
 				{
-					if(player.getInvulnerable()<=0)
+					if(player.getInvulnerable()<=0 && enemies.get(i).getAlive() == true)
 					{
 						player.setInvulnerable(60);
 					}
 				}
 				enemies.get(i).draw(batch);
+				if(enemies.get(i).getAlive() == false && enemies.get(i).getTimer() <= 0)
+				{
+					enemies.remove(i);
+				}
 			}
 			for(int i=0;i<playerBullets.size();i++)
 			{
 				for(int k=0;k<enemies.size();k++)
 				{
 					boolean collision = playerBullets.get(i).checkCollision(enemies.get(k));
-					if(collision == true)
+					if(collision == true && enemies.get(k).getAlive() == true)
 					{
 						playerBullets.get(i).setAlive(false);
+						enemies.get(k).kill(graphics.get(8));
 					}
 				}
 				if(playerBullets.get(i).getAlive() == false)
@@ -353,6 +390,7 @@ public class Game extends ApplicationAdapter{
 		graphics.add(new Texture(Gdx.files.internal("menu.png")));//5
 		graphics.add(new Texture(Gdx.files.internal("dotBlue.png")));//6
 		graphics.add(new Texture(Gdx.files.internal("dotRed.png")));//7
+		graphics.add(new Texture(Gdx.files.internal("explosion.png")));//8
 	}
 	
 	public void loadSounds()
