@@ -6,6 +6,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -34,6 +35,7 @@ public class Game extends ApplicationAdapter{
 	private Sound music;
 	private ArrayList<Bullet> enemyBullets = new ArrayList<Bullet>();
 	private ArrayList<Bullet> playerBullets = new ArrayList<Bullet>();
+	private ArrayList<TextureRegion> characters = new ArrayList<TextureRegion>();
 	private enum gameStates{MENU,START,PLAYING,GAMEOVER,HIGHSCORE};
 	private gameStates currentState = gameStates.MENU;
 	private int soundChanged = 0;
@@ -45,6 +47,7 @@ public class Game extends ApplicationAdapter{
 	public void create () {
 		loadGraphics();
 		loadSounds();
+		loadText();
 		background = graphics.get(0);
 		
 		aspect = Gdx.graphics.getWidth()/Gdx.graphics.getHeight(); //width to height ratio
@@ -79,7 +82,6 @@ public class Game extends ApplicationAdapter{
 			//start/resume Game
 			//highscores
 			//exit
-
 			if(soundChanged == 0 || soundChanged == 2)
 
 			if(soundChanged == 0 || soundChanged == 2 || soundChanged == 3)
@@ -166,12 +168,7 @@ public class Game extends ApplicationAdapter{
 				}
 
 			}
-			
-			if(soundChanged == 0 || soundChanged == 1)
-			{	
-				score++;
-				scoreMultiplier = 1;
-			}
+			score++;
 			
 			if(soundChanged == 0 || soundChanged == 1|| soundChanged == 3)
 
@@ -295,6 +292,8 @@ public class Game extends ApplicationAdapter{
 			
 			batch.begin(); //start drawing graphics
 			batch.draw(background,0,0,camera.viewportWidth,camera.viewportHeight); //draw camera viewport
+			drawText("Score",70,96,2,4);
+			drawText(""+score,81,96,2,4);
 			for(int i=0;i<enemies.size();i++)
 			{
 				boolean collision = enemies.get(i).checkCollision(m);
@@ -399,6 +398,8 @@ public class Game extends ApplicationAdapter{
 			}
 			batch.begin();
 			batch.draw(graphics.get(9),0,0,camera.viewportWidth,camera.viewportHeight); //draw camera viewport
+			drawText("Score",20,50,4,8);
+			drawText(""+score,50,50,4,8);
 			batch.end();
 			break;
 		case HIGHSCORE:
@@ -477,6 +478,7 @@ public class Game extends ApplicationAdapter{
 		graphics.add(new Texture(Gdx.files.internal("dotRed.png")));//7
 		graphics.add(new Texture(Gdx.files.internal("explosion.png")));//8
 		graphics.add(new Texture(Gdx.files.internal("gameover.png")));//9
+		graphics.add(new Texture(Gdx.files.internal("fontsolid.png")));//10
 	}
 	
 	public void loadSounds()
@@ -496,5 +498,43 @@ public class Game extends ApplicationAdapter{
 		sounds.add(sound6);
 		Sound sound7 = Gdx.audio.newSound(Gdx.files.internal("SpaceyExplosion.mp3"));
 		sounds.add(sound7);
+	}
+	
+	public void loadText()
+	{
+		//get texture into textureregion
+		for(int i=0;i<13;i++)
+		{
+			TextureRegion region = new TextureRegion(graphics.get(10), i*29, 0, 29, 40);
+			characters.add(region);
+		}
+		for(int i=0;i<13;i++)
+		{
+			TextureRegion region = new TextureRegion(graphics.get(10), i*29, 45, 29, 40);
+			characters.add(region);
+		}
+		for(int i=0;i<10;i++)
+		{
+			TextureRegion region = new TextureRegion(graphics.get(10), i*29, 90, 29, 40);
+			characters.add(region);
+		}
+	}
+	
+	public void drawText(String text,float x, float y, float width, float height)
+	{
+		text = text.toUpperCase();
+		for(int i=0;i<text.length();i++)
+		{
+			int index = (int)text.charAt(i);
+			if(index >= 48 && index <= 57)
+			{
+				index = index-48+26;
+			}
+			else if(index >= 65 && index <= 90)
+			{
+				index = index - 65;
+			}
+			batch.draw(characters.get(index), x+((width+.1f)*i), y,width,height);
+		}
 	}
 }
