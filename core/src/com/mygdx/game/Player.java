@@ -12,6 +12,9 @@ public class Player {
 	private int score;
 	private Vector3 clicked;
 	private boolean escape = false;
+	private int invulnerable = 0;
+	private boolean shooting = false;
+	private int timer = 0;
 	
 	public Player(Mob m)
 	{
@@ -102,5 +105,35 @@ public class Player {
 	public void setEscape(boolean e)
 	{
 		escape = e;
+	}
+	
+	public int getInvulnerable()
+	{
+		return invulnerable;
+	}
+	
+	public void setInvulnerable(int inv)
+	{
+		this.invulnerable = inv;
+	}
+	
+	public void setShooting(boolean s)
+	{
+		shooting = s;
+	}
+	
+	public boolean getShooting()
+	{
+		return shooting;
+	}
+	
+	public void setTimer(int t)
+	{
+		timer = t;
+	}
+	
+	public int getTimer()
+	{
+		return timer;
 	}
 }
