@@ -65,7 +65,6 @@ public class Input implements InputProcessor{
 	}
 
 	public boolean touchDown(int x, int y, int pointer, int button) {
-		System.out.println(camera.unproject(new Vector3(x,y,0)));
 		Vector3 vec = camera.unproject(new Vector3(x,y,0));
 		player.setClick(vec);
 		player.setShooting(true);

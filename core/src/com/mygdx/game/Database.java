@@ -58,7 +58,7 @@ public class Database
 	
 	public String queryAll()
 	{
-		String query = "select * from scores";
+		String query = "select * from scores order by score desc limit 10;";
 		String total = "";
 		try {
 			Statement statement = con.createStatement();

@@ -42,6 +42,7 @@ public class Game extends ApplicationAdapter{
 	private int time = 0;
 	private int frames = 0;
 	private int spawns = 1;
+	private String[] scoreString;
 	
 	@Override
 	public void create () {
@@ -64,8 +65,6 @@ public class Game extends ApplicationAdapter{
 	    
 		db = new Database();
 		db.connect();
-		String test = db.queryAll();
-		System.out.println(test);
 	}
 
 	@Override
@@ -292,6 +291,8 @@ public class Game extends ApplicationAdapter{
 			
 			batch.begin(); //start drawing graphics
 			batch.draw(background,0,0,camera.viewportWidth,camera.viewportHeight); //draw camera viewport
+			drawText("Health",15,96,2,4);
+			drawText(""+player.getHealth(),31,96,2,4);
 			drawText("Score",70,96,2,4);
 			drawText(""+score,81,96,2,4);
 			for(int i=0;i<enemies.size();i++)
@@ -312,6 +313,14 @@ public class Game extends ApplicationAdapter{
 						if(player.getHealth() <= 0)
 						{
 							currentState = gameStates.GAMEOVER;
+							db.insertScore("Player", score);
+							String fromdb = db.queryAll();
+							scoreString = fromdb.split("\\n");
+							fromdb = fromdb.replaceAll("\\s", "");
+							for(int q=0;q<scoreString.length;q++)
+							{
+								scoreString[q] = scoreString[q].replaceAll("\\s", "");
+							}
 							frames = 180;
 						}
 					}
@@ -361,6 +370,14 @@ public class Game extends ApplicationAdapter{
 					if(player.getHealth() <= 0)
 					{
 						currentState = gameStates.GAMEOVER;
+						db.insertScore("Player", score);
+						String fromdb = db.queryAll();
+						scoreString = fromdb.split("\\n");
+						fromdb = fromdb.replaceAll("\\s", "");
+						for(int q=0;q<scoreString.length;q++)
+						{
+							scoreString[q] = scoreString[q].replaceAll("\\s", "");
+						}
 					}
 				}
 				if(enemyBullets.get(i).getAlive() == false)
@@ -403,6 +420,13 @@ public class Game extends ApplicationAdapter{
 			batch.end();
 			break;
 		case HIGHSCORE:
+			batch.begin();
+			batch.draw(graphics.get(11),0,0,camera.viewportWidth,camera.viewportHeight); //draw camera viewport
+			for(int i=0;i<scoreString.length;i++)
+			{
+				drawText(scoreString[i],20,83-(7*i),3,6);
+			}
+			batch.end();
 			break;
 		}
 	}
@@ -479,6 +503,7 @@ public class Game extends ApplicationAdapter{
 		graphics.add(new Texture(Gdx.files.internal("explosion.png")));//8
 		graphics.add(new Texture(Gdx.files.internal("gameover.png")));//9
 		graphics.add(new Texture(Gdx.files.internal("fontsolid.png")));//10
+		graphics.add(new Texture(Gdx.files.internal("highscore.png")));//11
 	}
 	
 	public void loadSounds()
