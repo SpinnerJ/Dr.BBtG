@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Sound;
 
 public class Game extends ApplicationAdapter{
 	private static final int GAMEWIDTH = 100; //game width in spatial coordinates, doesn't rely on amount of pixels on screen
@@ -25,14 +26,18 @@ public class Game extends ApplicationAdapter{
 	private Database db;
 	private ArrayList<Mob> enemies = new ArrayList<Mob>();
 	private ArrayList<Texture> graphics = new ArrayList<Texture>();
+	private ArrayList<Sound> sounds = new ArrayList<Sound>();
+	private Sound music;
 	private ArrayList<Bullet> enemyBullets = new ArrayList<Bullet>();
 	private ArrayList<Bullet> playerBullets = new ArrayList<Bullet>();
 	private enum gameStates{MENU,START,PLAYING,GAMEOVER,HIGHSCORE};
 	private gameStates currentState = gameStates.MENU;
+	private int soundChanged = 0;
 	
 	@Override
 	public void create () {
 		loadGraphics();
+		loadSounds();
 		background = graphics.get(0);
 		
 		aspect = Gdx.graphics.getWidth()/Gdx.graphics.getHeight(); //width to height ratio
@@ -44,7 +49,8 @@ public class Game extends ApplicationAdapter{
 		m = player.getMob(); //reference to player's mob
 		Gdx.input.setInputProcessor(new Input(player,camera)); //links libGDX input to our input class
 		
-	    
+	    music = sounds.get(0);
+	    music.play();
 	    
 		db = new Database();
 		db.connect();
@@ -69,6 +75,13 @@ public class Game extends ApplicationAdapter{
 			//start/resume Game
 			//highscores
 			//exit
+			if(soundChanged == 0 || soundChanged == 2)
+			{
+				soundChanged = 1;
+				music.stop();
+				music = sounds.get(0);
+				music.loop();
+			}
 			if(player.getClick().x >= 31.56 && player.getClick().x <= 67.96) //poll mouse if last place clicked was a button
 			{
 				if(player.getClick().y >= 65.0 && player.getClick().y <= 74.79)
@@ -109,6 +122,13 @@ public class Game extends ApplicationAdapter{
 			batch.end();
 			break;
 		case PLAYING:
+			if(soundChanged == 0 || soundChanged == 1)
+			{
+				soundChanged = 2;
+				music.stop();
+				music = sounds.get(1);
+				music.loop();
+			}
 			if(player.getEscape() == true)
 			{
 				currentState = gameStates.MENU;
@@ -199,6 +219,11 @@ public class Game extends ApplicationAdapter{
 		{
 			graphics.get(i).dispose();
 		}
+		
+		for(int k=0;k<sounds.size();k++)
+		{
+			sounds.get(k).dispose();
+		}
 		batch.dispose();
 	}
 	
@@ -256,5 +281,13 @@ public class Game extends ApplicationAdapter{
 		graphics.add(new Texture(Gdx.files.internal("menu.png")));//5
 		graphics.add(new Texture(Gdx.files.internal("dotBlue.png")));//6
 		graphics.add(new Texture(Gdx.files.internal("dotRed.png")));//7
+	}
+	
+	public void loadSounds()
+	{
+		Sound sound = Gdx.audio.newSound(Gdx.files.internal("menu.mp3"));
+		sounds.add(sound);
+		Sound sound2 = Gdx.audio.newSound(Gdx.files.internal("btg.mp3"));
+		sounds.add(sound2);
 	}
 }
