@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Bullet {
 	private float x;
@@ -14,29 +15,30 @@ public class Bullet {
 	private boolean alive;
 	private int timer;
 	
-	public Bullet(float x, float y, float angle, Texture img)
+	public Bullet(float x, float y, float angle, Texture img, float speed)
 	{
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
-		width = 1;
-		height = 1;
-		speed = 0.008333f; //travel half the screen in 1 second
+		width = 2;
+		height = 2;
+		this.speed = speed;
 		this.sprite = new Sprite(img);
 		this.sprite.setPosition(x,y);
 		this.sprite.setSize(width,height);
 		this.sprite.setOrigin((width/2f), (height/2f));
+		this.alive = true;
 	}
 	
 	public boolean checkCollision(Mob m)
 	{
 		boolean collision = false;
-		float bx = this.sprite.getOriginX();
-		float by = this.sprite.getOriginY();
+		float bx = this.x+this.sprite.getOriginX();
+		float by = this.y+this.sprite.getOriginY();
 		float br = this.width/2f;
 		
-		float mx = m.getSprite().getOriginX();
-		float my = m.getSprite().getOriginY();
+		float mx = m.getSprite().getOriginX()+m.getX();
+		float my = m.getSprite().getOriginY()+m.getY();
 		float mr = m.getWidth()/2f;
 		
 		float dx = bx - mx;
@@ -53,5 +55,56 @@ public class Bullet {
 		}
 		
 		return collision;
+	}
+	
+	public void move()
+	{
+		float speedX = (float)Math.cos(Math.toRadians(this.angle+90));
+		speedX = speedX*this.speed;
+		
+		//get how fast the player is moving in the y direction
+		float speedY = (float)Math.sin(Math.toRadians(this.angle+90));
+		speedY = speedY*this.speed;
+		
+		setX(this.x+speedX);
+		setY(this.y+speedY);
+		
+		if(this.x < -2 || this.x > 102 || this.y < -2 || this.y > 102)
+		{
+			alive = false;
+		}
+			
+	}
+	
+	public void setX(float x)
+	{
+		this.x = x;
+		this.sprite.setX(x);
+	}
+	
+	public void setY(float y)
+	{
+		this.y = y;
+		this.sprite.setY(y);
+	}
+	
+	public void draw(SpriteBatch batch)
+	{
+		this.sprite.draw(batch);
+	}
+	
+	public void remove()
+	{
+		this.sprite.getTexture().dispose();
+	}
+	
+	public boolean getAlive()
+	{
+		return this.alive;
+	}
+	
+	public void setAlive(boolean a)
+	{
+		this.alive = a;
 	}
 }

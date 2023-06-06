@@ -44,7 +44,7 @@ public class Game extends ApplicationAdapter{
 		camera = new OrthographicCamera(GAMEWIDTH,GAMEHEIGHT*aspect); //2D camera
 		camera.position.set(camera.viewportWidth/2f,camera.viewportHeight/2f,0); //mapping camera position to screen viewport
 		batch = new SpriteBatch(); //required to draw in libGDX
-		test = new Mob(49,49,6,6,graphics.get(1),10,0); //mob given to player
+		test = new Mob(49,49,6,6,graphics.get(1),10,4); //mob given to player
 		player = new Player(test); //player object
 		m = player.getMob(); //reference to player's mob
 		Gdx.input.setInputProcessor(new Input(player,camera)); //links libGDX input to our input class
@@ -196,11 +196,83 @@ public class Game extends ApplicationAdapter{
 				m.setY(0);
 			}
 			
+			if(player.getTimer() > 0)
+			{
+				player.setTimer(player.getTimer()-1);
+			}
+			if(player.getShooting() == true && player.getTimer() <= 0)
+			{
+				Bullet bullet = new Bullet(m.getX()+2f,m.getY()+2f,m.getAngle(),graphics.get(7),1f+m.getSpeed());
+				playerBullets.add(bullet);
+				player.setTimer(15);
+			}
+			
+			for(int i=0;i<enemies.size();i++)
+			{
+				enemies.get(i).update(m, enemyBullets, graphics.get(6));
+			}
+			
+			for(int i=0;i<playerBullets.size();i++)
+			{
+				playerBullets.get(i).move();
+			}
+			for(int i=0;i<enemyBullets.size();i++)
+			{
+				enemyBullets.get(i).move();
+			}
+			
 			batch.begin(); //start drawing graphics
 			batch.draw(background,0,0,camera.viewportWidth,camera.viewportHeight); //draw camera viewport
 			for(int i=0;i<enemies.size();i++)
 			{
+				boolean collision = enemies.get(i).checkCollision(m);
+				if(collision == true)
+				{
+					if(player.getInvulnerable()<=0)
+					{
+						player.setInvulnerable(60);
+					}
+				}
 				enemies.get(i).draw(batch);
+			}
+			for(int i=0;i<playerBullets.size();i++)
+			{
+				for(int k=0;k<enemies.size();k++)
+				{
+					boolean collision = playerBullets.get(i).checkCollision(enemies.get(k));
+					if(collision == true)
+					{
+						playerBullets.get(i).setAlive(false);
+					}
+				}
+				if(playerBullets.get(i).getAlive() == false)
+				{
+					playerBullets.remove(i);
+				}
+				else
+				{
+					playerBullets.get(i).draw(batch);
+				}
+			}
+			for(int i=0;i<enemyBullets.size();i++)
+			{
+				boolean collision = enemyBullets.get(i).checkCollision(m);
+				if(collision == true)
+				{
+					enemyBullets.get(i).setAlive(false);
+				}
+				if(enemyBullets.get(i).getAlive() == false)
+				{
+					enemyBullets.remove(i);
+				}
+				else
+				{
+					enemyBullets.get(i).draw(batch);
+				}
+			}
+			if(player.getInvulnerable() > 0)
+			{
+				player.setInvulnerable(player.getInvulnerable()-1);
 			}
 			test.draw(batch);//draw player's mob
 			batch.end();
@@ -242,7 +314,7 @@ public class Game extends ApplicationAdapter{
 		boolean side = Math.random() < 0.5;
 		if(side == false)
 		{
-			ry = (float)Math.random()*100;
+			ry = (float)Math.random()*95;
 			if(px < 0)
 			{
 				rx = 94;
@@ -255,7 +327,7 @@ public class Game extends ApplicationAdapter{
 		}
 		else
 		{
-			rx = (float)Math.random()*100;
+			rx = (float)Math.random()*95;
 			if(py < 0)
 			{
 				ry = 94;
