@@ -137,12 +137,12 @@ public class Player {
 	{
 		return timer;
 	}
-	
+
 	public void setHealth(int h)
 	{
 		health = h;
 	}
-	
+
 	public int getHealth()
 	{
 		return health;

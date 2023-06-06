@@ -1,9 +1,17 @@
 package com.mygdx.game;
 import java.util.ArrayList;
 
+
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.audio.Sound;
+
 
 public class Mob {
 	private float x;
@@ -20,6 +28,9 @@ public class Mob {
 	private states currentState = states.FIRE;
 	private int type;
 	private int between = 0;
+
+	private static Sound fireSound = Gdx.audio.newSound(Gdx.files.internal("PlasmaGun.mp3"));
+
 	
 	public Mob(float x,float y,int width,int height,Texture img,int health,int type)
 	{

@@ -24,6 +24,10 @@ public class Game extends ApplicationAdapter{
 	private Player player;
 	private Mob m;
 	private Database db;
+
+	private int score;
+	private int scoreMultiplier;
+
 	private ArrayList<Mob> enemies = new ArrayList<Mob>();
 	private ArrayList<Texture> graphics = new ArrayList<Texture>();
 	private ArrayList<Sound> sounds = new ArrayList<Sound>();
@@ -75,7 +79,11 @@ public class Game extends ApplicationAdapter{
 			//start/resume Game
 			//highscores
 			//exit
+
 			if(soundChanged == 0 || soundChanged == 2)
+
+			if(soundChanged == 0 || soundChanged == 2 || soundChanged == 3)
+
 			{
 				soundChanged = 1;
 				music.stop();
@@ -120,6 +128,10 @@ public class Game extends ApplicationAdapter{
 			time = 0;
 			frames = 0;
 			spawns = 1;
+
+			score = 0;
+			scoreMultiplier = 1;
+
 			batch.begin(); //start drawing graphics
 			batch.draw(background,0,0,camera.viewportWidth,camera.viewportHeight); //draw camera viewport
 			batch.end();
@@ -152,9 +164,17 @@ public class Game extends ApplicationAdapter{
 					}
 					spawns++;
 				}
+
 			}
 			
 			if(soundChanged == 0 || soundChanged == 1)
+			{	
+				score++;
+				scoreMultiplier = 1;
+			}
+			
+			if(soundChanged == 0 || soundChanged == 1|| soundChanged == 3)
+
 			{
 				soundChanged = 2;
 				music.stop();
@@ -170,6 +190,7 @@ public class Game extends ApplicationAdapter{
 			if(player.getRotating() != 0)
 			{
 				m.setAngle(m.getAngle()+(player.getRotating()*5));
+
 			}
 			
 			//accelerate player if acceleration key is pressed
@@ -177,6 +198,22 @@ public class Game extends ApplicationAdapter{
 			{
 				player.setAcceleration((player.getAcceleration()+(player.getAccelerating()*0.0001f)));
 				player.setAceAngle(m.getAngle());
+
+				player.setAceAngle(m.getAngle());
+			}
+			
+			//accelerate player if acceleration key is pressed
+			if(player.getAccelerating() > 0) {
+				if(player.getAcceleration() < 0f) {
+					player.setAcceleration(0f);
+				}
+				player.setAcceleration((player.getAcceleration()+(player.getAccelerating()*0.0005f)));
+			} else if(player.getAccelerating() < 0) {
+				if(player.getAcceleration() > 0f) {
+					player.setAcceleration(0f);
+				}
+				player.setAcceleration((player.getAcceleration()+(player.getAccelerating()*0.0005f)));
+
 			}
 			
 			//set the speed of the player based on acceleration
@@ -237,6 +274,9 @@ public class Game extends ApplicationAdapter{
 				Bullet bullet = new Bullet(m.getX()+2f,m.getY()+2f,m.getAngle(),graphics.get(7),1f+m.getSpeed());
 				playerBullets.add(bullet);
 				player.setTimer(15);
+
+				sounds.get(3).play();
+
 			}
 			
 			for(int i=0;i<enemies.size();i++)
@@ -265,6 +305,11 @@ public class Game extends ApplicationAdapter{
 						player.setInvulnerable(60);
 						player.setHealth(player.getHealth()-1);
 						enemies.get(i).kill(graphics.get(8));
+
+						sounds.get(4).play();
+						score += (100 * scoreMultiplier);
+						scoreMultiplier++;
+
 						if(player.getHealth() <= 0)
 						{
 							currentState = gameStates.GAMEOVER;
@@ -286,6 +331,11 @@ public class Game extends ApplicationAdapter{
 					{
 						playerBullets.get(i).setAlive(false);
 						enemies.get(k).kill(graphics.get(8));
+
+						sounds.get(6).play();
+						score += (100 * scoreMultiplier);
+						scoreMultiplier++;
+
 					}
 				}
 				if(playerBullets.get(i).getAlive() == false)
@@ -305,6 +355,9 @@ public class Game extends ApplicationAdapter{
 					enemyBullets.get(i).setAlive(false);
 					player.setInvulnerable(60);
 					player.setHealth(player.getHealth()-1);
+
+					sounds.get(4).play();
+
 					if(player.getHealth() <= 0)
 					{
 						currentState = gameStates.GAMEOVER;
@@ -327,6 +380,14 @@ public class Game extends ApplicationAdapter{
 			batch.end();
 			break;
 		case GAMEOVER:
+
+			if(soundChanged == 0 || soundChanged == 1|| soundChanged == 2)
+			{
+				soundChanged = 3;
+				music.stop();
+				music = sounds.get(2);
+				music.play();
+			}
 			break;
 		case HIGHSCORE:
 			break;
@@ -411,5 +472,16 @@ public class Game extends ApplicationAdapter{
 		sounds.add(sound);
 		Sound sound2 = Gdx.audio.newSound(Gdx.files.internal("btg.mp3"));
 		sounds.add(sound2);
+
+		Sound sound3 = Gdx.audio.newSound(Gdx.files.internal("Game_over_music.mp3"));
+		sounds.add(sound3);
+		Sound sound4 = Gdx.audio.newSound(Gdx.files.internal("LaserGun.mp3"));
+		sounds.add(sound4);
+		Sound sound5 = Gdx.audio.newSound(Gdx.files.internal("LongExplosion.mp3"));
+		sounds.add(sound5);
+		Sound sound6 = Gdx.audio.newSound(Gdx.files.internal("PlasmaGun.mp3"));
+		sounds.add(sound6);
+		Sound sound7 = Gdx.audio.newSound(Gdx.files.internal("SpaceyExplosion.mp3"));
+		sounds.add(sound7);
 	}
 }
