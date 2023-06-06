@@ -313,6 +313,7 @@ public class Game extends ApplicationAdapter{
 						if(player.getHealth() <= 0)
 						{
 							currentState = gameStates.GAMEOVER;
+							frames = 180;
 						}
 					}
 				}
@@ -380,7 +381,15 @@ public class Game extends ApplicationAdapter{
 			batch.end();
 			break;
 		case GAMEOVER:
-
+			frames--;
+			if(frames <= 0)
+			{
+				frames = 0;
+				if(player.getShooting() == true)
+				{
+					currentState = gameStates.HIGHSCORE;
+				}
+			}
 			if(soundChanged == 0 || soundChanged == 1|| soundChanged == 2)
 			{
 				soundChanged = 3;
@@ -388,6 +397,9 @@ public class Game extends ApplicationAdapter{
 				music = sounds.get(2);
 				music.play();
 			}
+			batch.begin();
+			batch.draw(graphics.get(9),0,0,camera.viewportWidth,camera.viewportHeight); //draw camera viewport
+			batch.end();
 			break;
 		case HIGHSCORE:
 			break;
@@ -464,6 +476,7 @@ public class Game extends ApplicationAdapter{
 		graphics.add(new Texture(Gdx.files.internal("dotBlue.png")));//6
 		graphics.add(new Texture(Gdx.files.internal("dotRed.png")));//7
 		graphics.add(new Texture(Gdx.files.internal("explosion.png")));//8
+		graphics.add(new Texture(Gdx.files.internal("gameover.png")));//9
 	}
 	
 	public void loadSounds()
